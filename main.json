@@ -1,0 +1,1076 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+        "url": "https://raw.githubusercontent.com/Lovelearningxi/IV_data/main/new_nobel_winners.csv",
+        "format": {
+            "type": "csv"
+        }
+    },
+    "config": {
+        "legend": {
+            "legendX": 200,
+            "legendY": 10
+        },
+        "axis": {
+            "titleFontSize": 15,
+            "titleFont": "Helvetica Neue",
+            "titleFontWeight": "bold"
+        },
+        "title": {
+            "font": "Helvetica Neue",
+            "fontSize": 15,
+            "fontWeight": "bold",
+            "anchor": "middle"
+        }
+    },
+    "transform": [
+        {
+            "calculate": "datum.laureate_type == 'individual' ? 'Individual' : 'Organization'",
+            "as": "laureate_type_label"
+        }
+    ],
+    "vconcat": [
+        {
+            "transform": [
+                {
+                    "filter": {
+                        "param": "click_laureate_type"
+                    }
+                },
+                {
+                    "filter": {
+                        "param": "click_Category"
+                    }
+                },
+                {
+                    "filter": {
+                        "param": "brush_rect"
+                    }
+                },
+                {
+                    "filter": {
+                        "param": "click_Organization"
+                    }
+                },
+                {
+                    "filter": {
+                        "param": "click_birth_country"
+                    }
+                },
+                {
+                    "timeUnit": "year",
+                    "field": "prize_year",
+                    "as": "year"
+                },
+                {
+                    "aggregate": [
+                        {
+                            "op": "count",
+                            "field": "category",
+                            "as": "winner_count"
+                        }
+                    ],
+                    "groupby": [
+                        "year",
+                        "category"
+                    ]
+                }
+            ],
+            "mark": "line",
+            "selection": {
+                "category_select": {
+                    "type": "multi",
+                    "fields": [
+                        "category"
+                    ],
+                    "bind": "legend"
+                }
+            },
+            "encoding": {
+                "x": {
+                    "field": "year",
+                    "type": "temporal",
+                    "axis": {
+                        "title": "Year"
+                    }
+                },
+                "y": {
+                    "field": "winner_count",
+                    "type": "quantitative",
+                    "axis": {
+                        "title": "Number of Nobel Prize Winners"
+                    }
+                },
+                "color": {
+                    "field": "category",
+                    "type": "nominal",
+                    "legend": {
+                        "title": "Time",
+                        "orient": "right",
+                        "values": [
+                            "Physics",
+                            "Chemistry",
+                            "Medicine",
+                            "Peace",
+                            "Literature",
+                            "Economics"
+                        ]
+                    },
+                    "scale": {
+                        "domain": [
+                            "Physics",
+                            "Chemistry",
+                            "Medicine",
+                            "Peace",
+                            "Literature",
+                            "Economics"
+                        ],
+                        "range": [
+                            "#1f77b4",
+                            "#ff7f0e",
+                            "#2ca02c",
+                            "#d62728",
+                            "#9467bd",
+                            "#8c564b"
+                        ]
+                    }
+                },
+                "opacity": {
+                    "condition": {
+                        "selection": "category_select",
+                        "value": 1
+                    },
+                    "value": 0.1
+                }
+            },
+            "title": {
+                "text": "Nobel Prize Winners by Category Over Time",
+                "fontSize": 15,
+                "fontWeight": "bold",
+                "font": "Helvetica Neue"
+            },
+            "width": 900
+        },
+        {
+            "hconcat": [
+                {
+                    "width": 200,
+                    "height": 200,
+                    "title": "Gender",
+                    "mark": "arc",
+                    "params": [
+                        {
+                            "name": "click_gender",
+                            "select": {
+                                "type": "point",
+                                "fields": [
+                                    "gender"
+                                ]
+                            }
+                        }
+                    ],
+                    "encoding": {
+                        "theta": {
+                            "field": "count",
+                            "type": "quantitative",
+                            "stack": true
+                        },
+                        "color": {
+                            "field": "gender",
+                            "type": "nominal",
+                            "legend": {
+                                "title": "Gender",
+                                "orient": "right",
+                                "values": [
+                                    "Male",
+                                    "Female",
+                                    "NA"
+                                ]
+                            },
+                            "scale": {
+                                "domain": [
+                                    "Male",
+                                    "Female",
+                                    "NA",
+                                    "Individual",
+                                    "Organization",
+                                    "Physics",
+                                    "Chemistry",
+                                    "Medicine",
+                                    "Peace",
+                                    "Literature",
+                                    "Economics"
+                                ],
+                                "range": [
+                                    "#1f77b4",
+                                    "#ff7f0e",
+                                    "#bdbdbd",
+                                    "#ff7f0e",
+                                    "#1f77b4",
+                                    "#1f77b4",
+                                    "#ff7f0e",
+                                    "#2ca02c",
+                                    "#d62728",
+                                    "#9467bd",
+                                    "#8c564b"
+                                ]
+                            }
+                        },
+                        "tooltip": [
+                            {
+                                "field": "gender",
+                                "type": "nominal",
+                                "title": "Gender"
+                            },
+                            {
+                                "field": "count",
+                                "type": "quantitative",
+                                "title": "Count"
+                            }
+                        ],
+                        "opacity": {
+                            "condition": {
+                                "selection": "click_gender",
+                                "value": 1
+                            },
+                            "value": 0.2
+                        }
+                    },
+                    "transform": [
+                        {
+                            "filter": {
+                                "param": "click_laureate_type"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Category"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "brush_rect"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Organization"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_birth_country"
+                            }
+                        },
+                        {
+                            "aggregate": [
+                                {
+                                    "op": "count",
+                                    "as": "count"
+                                }
+                            ],
+                            "groupby": [
+                                "gender"
+                            ]
+                        },
+                    ]
+                },
+                {
+                    "width": 200,
+                    "height": 200,
+                    "title": "Laureate Type",
+                    "mark": "arc",
+                    "params": [
+                        {
+                            "name": "click_laureate_type",
+                            "select": {
+                                "type": "point",
+                                "fields": [
+                                    "laureate_type"
+                                ]
+                            }
+                        }
+                    ],
+                    "encoding": {
+                        "theta": {
+                            "field": "count",
+                            "type": "quantitative",
+                            "stack": true
+                        },
+                        "color": {
+                            "field": "laureate_type",
+                            "type": "nominal",
+                            "legend": {
+                                "title": "Laureate Type",
+                                "orient": "none",
+                                "legendX": 220,
+                                "legendY": 0,
+                                "values": [
+                                    "Individual",
+                                    "Organization"
+                                ]
+                            }
+                        },
+                        "tooltip": [
+                            {
+                                "field": "laureate_type",
+                                "type": "nominal",
+                                "title": "Laureate Type"
+                            },
+                            {
+                                "field": "count",
+                                "type": "quantitative",
+                                "title": "Count"
+                            }
+                        ],
+                        "opacity": {
+                            "condition": {
+                                "selection": "click_laureate_type",
+                                "value": 1
+                            },
+                            "value": 0.2
+                        }
+                    },
+                    "transform": [
+                        {
+                            "filter": {
+                                "param": "click_gender"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Category"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "brush_rect"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Organization"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_birth_country"
+                            }
+                        },
+                        {
+                            "aggregate": [
+                                {
+                                    "op": "count",
+                                    "as": "count"
+                                }
+                            ],
+                            "groupby": [
+                                "laureate_type"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "width": 200,
+                    "height": 200,
+                    "title": "Category",
+                    "mark": {
+                        "type": "arc",
+                        "innerRadius": 20
+                    },
+                    "params": [
+                        {
+                            "name": "click_Category",
+                            "select": {
+                                "type": "point",
+                                "fields": [
+                                    "category"
+                                ]
+                            }
+                        }
+                    ],
+                    "encoding": {
+                        "theta": {
+                            "field": "count",
+                            "type": "nominal",
+                            "stack": true,
+                            "sort": "ascending"
+                        },
+                        "radius": {
+                            "field": "count",
+                            "type": "quantitative",
+                            "scale": {
+                                "type": "sqrt",
+                                "range": [
+                                    0,
+                                    100
+                                ]
+                            }
+                        },
+                        "color": {
+                            "field": "category",
+                            "type": "nominal",
+                            "legend": {
+                                "title": "Category",
+                                "orient": "none",
+                                "legendX": 230,
+                                "legendY": 0,
+                                "values": [
+                                    "Physics",
+                                    "Chemistry",
+                                    "Medicine",
+                                    "Peace",
+                                    "Literature",
+                                    "Economics"
+                                ]
+                            }
+                        },
+                        "tooltip": [
+                            {
+                                "field": "category",
+                                "type": "nominal",
+                                "title": "Category"
+                            },
+                            {
+                                "field": "count",
+                                "type": "quantitative",
+                                "title": "Count"
+                            }
+                        ],
+                        "opacity": {
+                            "condition": {
+                                "selection": "click_Category",
+                                "value": 1
+                            },
+                            "value": 0.2
+                        }
+                    },
+                    "transform": [
+                        {
+                            "filter": {
+                                "param": "click_gender"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_laureate_type"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "brush_rect"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Organization"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_birth_country"
+                            }
+                        },
+                        {
+                            "aggregate": [
+                                {
+                                    "op": "count",
+                                    "as": "count"
+                                }
+                            ],
+                            "groupby": [
+                                "category"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "width": 900,
+            "height": 200,
+            "mark": "rect",
+            "params": [
+                {
+                    "name": "brush_rect",
+                    "select": {
+                        "type": "point",
+                        "fields": [
+                            "age"
+                        ]
+                    }
+                }
+            ],
+            "encoding": {
+                "y": {
+                    "field": "age",
+                    "type": "quantitative",
+                    "axis": {
+                        "title": "age"
+                    },
+                    "bin": {
+                        "maxbins": 30
+                    }
+                },
+                "x": {
+                    "field": "award_year",
+                    "type": "ordinal",
+                    "axis": {
+                        "title": "award_year"
+                    }
+                },
+                "color": {
+                    "field": "laureate_id",
+                    "aggregate": "count",
+                    "type": "quantitative",
+                    "legend": {
+                        "title": "Num_of_winners"
+                    }
+                },
+                "tooltip": [
+                    {
+                        "field": "laureate_id",
+                        "aggregate": "count",
+                        "type": "quantitative",
+                        "title": "Num_of_winners"
+                    },
+                    {
+                        "field": "age",
+                        "type": "quantitative",
+                        "title": "age",
+                        "bin": {
+                            "maxbins": 30
+                        }
+                    },
+                    {
+                        "field": "award_year",
+                        "type": "ordinal",
+                        "title": "award_year"
+                    }
+                ]
+            },
+            "transform": [
+                {
+                    "filter": {
+                        "param": "click_laureate_type"
+                    }
+                },
+                {
+                    "filter": {
+                        "param": "click_gender"
+                    }
+                },
+                {
+                    "filter": {
+                        "param": "click_Category"
+                    }
+                },
+                {
+                    "filter": {
+                        "param": "click_Organization"
+                    }
+                },
+                {
+                    "filter": {
+                        "param": "click_birth_country"
+                    }
+                },
+                {
+                    "calculate": "year(datum.prize_year) - year(datum.birth_date)",
+                    "as": "age"
+                },
+                {
+                    "calculate": "year(datum.prize_year)",
+                    "as": "award_year"
+                }
+            ]
+        },
+        {
+            "hconcat": [
+                {
+                    "width": 400,
+                    "height": 200,
+                    "title": "Nobel Prize Laureates by Birth Country",
+                    "mark": "bar",
+                    "params": [
+                        {
+                            "name": "click_birth_country",
+                            "select": {
+                                "type": "point",
+                                "fields": [
+                                    "birth_country"
+                                ]
+                            }
+                        }
+                    ],
+                    "transform": [
+                        {
+                            "filter": {
+                                "param": "click_laureate_type"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_gender"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Category"
+                            }
+                        },
+                        {
+                            "aggregate": [
+                                {
+                                    "op": "count",
+                                    "field": "birth_country",
+                                    "as": "count"
+                                }
+                            ],
+                            "groupby": [
+                                "birth_country"
+                            ]
+                        },
+                        {
+                            "sort": [
+                                {
+                                    "field": "count",
+                                    "order": "descending"
+                                }
+                            ],
+                            "window": [
+                                {
+                                    "op": "row_number",
+                                    "as": "rank"
+                                }
+                            ],
+                            "frame": [
+                                null,
+                                null
+                            ]
+                        },
+                        {
+                            "filter": "datum.rank <= 10"
+                        },
+                        {
+                            "filter": "datum.birth_country !== 'NA'"
+                        }
+                    ],
+                    "encoding": {
+                        "x": {
+                            "field": "count",
+                            "type": "quantitative",
+                            "axis": {
+                                "title": "Number of Laureates"
+                            }
+                        },
+                        "y": {
+                            "field": "birth_country",
+                            "type": "nominal",
+                            "sort": "-x",
+                            "axis": {
+                                "title": "Birth Country"
+                            }
+                        },
+                        "tooltip": [
+                            {
+                                "field": "birth_country",
+                                "type": "nominal",
+                                "title": "BirthCountry"
+                            },
+                            {
+                                "field": "count",
+                                "type": "quantitative",
+                                "title": "Number of Laureates"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "width": 300,
+                    "height": 200,
+                    "title": "Nobel Prize Laureates by Organization",
+                    "mark": "bar",
+                    "params": [
+                        {
+                            "name": "click_Organization",
+                            "select": {
+                                "type": "point",
+                                "fields": [
+                                    "organization_name"
+                                ]
+                            }
+                        }
+                    ],
+                    "transform": [
+                        {
+                            "filter": {
+                                "param": "click_laureate_type"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_gender"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Category"
+                            }
+                        },
+                        {
+                            "aggregate": [
+                                {
+                                    "op": "count",
+                                    "field": "organization_name",
+                                    "as": "count"
+                                }
+                            ],
+                            "groupby": [
+                                "organization_name"
+                            ]
+                        },
+                        {
+                            "sort": [
+                                {
+                                    "field": "count",
+                                    "order": "descending"
+                                }
+                            ],
+                            "window": [
+                                {
+                                    "op": "row_number",
+                                    "as": "rank"
+                                }
+                            ],
+                            "frame": [
+                                null,
+                                null
+                            ]
+                        },
+                        {
+                            "filter": "datum.rank <= 10"
+                        },
+                        {
+                            "filter": "datum.organization_name !== 'NA'"
+                        },
+                        {
+                            "filter": "datum.organization_name !== 'University College'"
+                        }
+                    ],
+                    "encoding": {
+                        "x": {
+                            "field": "count",
+                            "type": "quantitative",
+                            "axis": {
+                                "title": "Number of Laureates"
+                            }
+                        },
+                        "y": {
+                            "field": "organization_name",
+                            "type": "nominal",
+                            "sort": "-x",
+                            "axis": {
+                                "title": "Organization Name"
+                            }
+                        },
+                        "tooltip": [
+                            {
+                                "field": "organization_name",
+                                "type": "ordinal",
+                                "title": "Organization Name"
+                            },
+                            {
+                                "field": "count",
+                                "type": "quantitative",
+                                "title": "Number of Laureates"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "hconcat": [
+                {
+                    "width": 400,
+                    "height": 200,
+                    "projection": {
+                        "type": "equirectangular"
+                    },
+                    "title": "prize winner birth map",
+                    "transform": [
+                        {
+                            "filter": {
+                                "param": "click_gender"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Category"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "brush_rect"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Organization"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_birth_country"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_laureate_type"
+                            }
+                        }
+                    ],
+                    "layer": [
+                        {
+                            "data": {
+                                "url": "https://vega.github.io/vega-datasets/data/world-110m.json",
+                                "format": {
+                                    "type": "topojson",
+                                    "feature": "countries"
+                                }
+                            },
+                            "mark": {
+                                "type": "geoshape",
+                                "fill": "#e6e6e6",
+                                "stroke": "#bdbdbd",
+                                "strokeWidth": 0.5
+                            }
+                        },
+                        {
+                            "mark": "circle",
+                            "params": [
+                                {
+                                    "name": "click_birth_map",
+                                    "select": {
+                                        "type": "point",
+                                        "fields": [
+                                            "category"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "selection": {
+                                "category_select": {
+                                    "type": "multi",
+                                    "fields": [
+                                        "category"
+                                    ],
+                                    "bind": "legend"
+                                }
+                            },
+                            "encoding": {
+                                "longitude": {
+                                    "field": "birth_longitude",
+                                    "type": "quantitative"
+                                },
+                                "latitude": {
+                                    "field": "birth_latitude",
+                                    "type": "quantitative"
+                                },
+                                "size": {
+                                    "value": 20
+                                },
+                                "color": {
+                                    "field": "category",
+                                    "type": "nominal",
+                                    "scale": {
+                                        "scheme": "tableau10"
+                                    },
+                                    "legend": {
+                                        "title": "prize category",
+                                        "titleFontWeight": "bold",
+                                        "titleFontSize": 14
+                                    }
+                                },
+                                "tooltip": [
+                                    {
+                                        "field": "full_name",
+                                        "type": "nominal",
+                                        "title": "name"
+                                    },
+                                    {
+                                        "field": "birth_city",
+                                        "type": "nominal",
+                                        "title": "birth_city"
+                                    },
+                                    {
+                                        "field": "birth_country",
+                                        "type": "nominal",
+                                        "title": "birth_country"
+                                    },
+                                    {
+                                        "field": "category",
+                                        "type": "nominal",
+                                        "title": "category"
+                                    },
+                                    {
+                                        "field": "prize_year",
+                                        "type": "temporal",
+                                        "title": "prize_year"
+                                    }
+                                ],
+                                "opacity": {
+                                    "condition": {
+                                        "selection": "category_select",
+                                        "value": 1
+                                    },
+                                    "value": 0.1
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "width": 450,
+                    "height": 200,
+                    "projection": {
+                        "type": "equirectangular"
+                    },
+                    "title": "organization map",
+                    "transform": [
+                        {
+                            "filter": {
+                                "param": "click_gender"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Category"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "brush_rect"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_Organization"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_birth_country"
+                            }
+                        },
+                        {
+                            "filter": {
+                                "param": "click_laureate_type"
+                            }
+                        }
+                    ],
+                    "layer": [
+                        {
+                            "data": {
+                                "url": "https://vega.github.io/vega-datasets/data/world-110m.json",
+                                "format": {
+                                    "type": "topojson",
+                                    "feature": "countries"
+                                }
+                            },
+                            "mark": {
+                                "type": "geoshape",
+                                "fill": "#e6e6e6",
+                                "stroke": "#bdbdbd",
+                                "strokeWidth": 0.5
+                            }
+                        },
+                        {
+                            "mark": "circle",
+                            "params": [
+                                {
+                                    "name": "click_organization_map",
+                                    "select": {
+                                        "type": "point",
+                                        "fields": [
+                                            "category"
+                                        ]
+                                    }
+                                }
+                            ],
+                            "selection": {
+                                "category_select": {
+                                    "type": "multi",
+                                    "fields": [
+                                        "category"
+                                    ],
+                                    "bind": "legend"
+                                }
+                            },
+                            "encoding": {
+                                "longitude": {
+                                    "field": "organization_longitude",
+                                    "type": "quantitative"
+                                },
+                                "latitude": {
+                                    "field": "organization_latitude",
+                                    "type": "quantitative"
+                                },
+                                "size": {
+                                    "value": 20
+                                },
+                                "color": {
+                                    "field": "category",
+                                    "type": "nominal",
+                                    "scale": {
+                                        "scheme": "tableau10"
+                                    },
+                                    "legend": {
+                                        "title": "prize category",
+                                        "titleFontWeight": "bold",
+                                        "titleFontSize": 14
+                                    }
+                                },
+                                "tooltip": [
+                                    {
+                                        "field": "organization_name",
+                                        "type": "nominal",
+                                        "title": "organization name"
+                                    },
+                                    {
+                                        "field": "organization_city",
+                                        "type": "nominal",
+                                        "title": "organization city"
+                                    },
+                                    {
+                                        "field": "organization__country",
+                                        "type": "nominal",
+                                        "title": "organization__country"
+                                    },
+                                    {
+                                        "field": "category",
+                                        "type": "nominal",
+                                        "title": "category"
+                                    },
+                                    {
+                                        "field": "prize_year",
+                                        "type": "temporal",
+                                        "title": "prize_year"
+                                    }
+                                ],
+                                "opacity": {
+                                    "condition": {
+                                        "selection": "category_select",
+                                        "value": 1
+                                    },
+                                    "value": 0.1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
